@@ -1,5 +1,5 @@
-def main():
+def test_CenName():
   assert True
 
 if __name__ == "__main__":
-    main()
+    test_CenName()
