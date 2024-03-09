@@ -1,103 +1,106 @@
-import argparse
-import glob
-import os
 import re
 import sys
+import os
+import argparse
+import pytest
+import nltk
 import spacy
+import glob
 
-# Load spaCy English model
-nlp = spacy.load("en_core_web_md")
+Model = spacy.load("en_core_web_md")
 
-def parse_arguments():
-    parser = argparse.ArgumentParser(description="Censor sensitive information from text files.")
-    parser.add_argument('--input', type=str, action='append', help='Glob pattern for input files')
-    parser.add_argument('--output', type=str, help='Directory to store censored files')
-    parser.add_argument('--names', action='store_true', help='Censor names')
-    parser.add_argument('--dates', action='store_true', help='Censor dates')
-    parser.add_argument('--phones', action='store_true', help='Censor phone numbers')
-    parser.add_argument('--address', action='store_true', help='Censor physical addresses')
-    parser.add_argument('--stats', type=str, help='File or location to write statistics')
-    return parser.parse_args()
 
-def expand_globs(glob_patterns):
-    file_paths = []
-    for pattern in glob_patterns:
-        file_paths.extend(glob.glob(pattern))
-    return file_paths
 
-def censor_dates(text):
-    doc = nlp(text)
-    for ent in doc.ents:
-        if ent.label_ == "DATE":
-            text = text.replace(ent.text, "█"*len(ent.text))
-    return text
+def CenName(data):
+    Mod = Model(data)
+    for x in Mod.ents:
+        if x.label_ == "PERSON":
+            data = data.replace(x.text, "█" * len(x.text))
+    return data
 
-def censor_phone_numbers(text):
-    phone_pattern = r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$'
-    return re.sub(phone_pattern, '█', text)
+def CenDate(data):
+    Mods = Model(data)
+    for x in Mods.ents:
+        if x.label_ == "DATE":
+            data = data.replace(x.text, "█" * len(x.text))
+    return data
 
-def censor_names_with_spacy(text):
-    doc = nlp(text)
-    for ent in doc.ents:
-        if ent.label_ == "PERSON":
-            text = text.replace(ent.text, "█"*len(ent.text))
-    return text
+def CenNum(data):
+    NumPat = re.findall(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$', data)
+    for x in NumPat:
+        data = data.replace(x, '█' * len(x))
+    return data
 
-def censor_addresses_with_spacy(text):
-    doc = nlp(text)
-    for ent in doc.ents:
-        if ent.label_ in ["GPE", "LOC", "FAC"]:
-            text = text.replace(ent.text, "█"*len(ent.text))
-    return text
+def CenLoc(data):
+    Mods = Model(data)
+    for x in Mods.ents:
+        if x.label_ == "GPE" or x.label_ == "LOC" or x.label_ == "FAC":
+            data = data.replace(x.text, "█"*len(x.text))
+    return data
 
-def censor_content(content, censor_flags):
-    stats = {'dates': 0, 'phones': 0, 'names': 0, 'addresses': 0}
-    if censor_flags['dates']:
-        content = censor_dates(content)
-    if censor_flags['phones']:
-        content = censor_phone_numbers(content)
-    if censor_flags['names']:
-        content = censor_names_with_spacy(content)
-    if censor_flags['address']:
-        content = censor_addresses_with_spacy(content)
-    return content, stats
+def CenInf(dat, temp):
+    Statistics = {'names': 0, 'dates': 0, 'phones': 0, 'addresses': 0}
+    if temp['names']:
+        dat = CenName(dat)
+    if temp['dates']:
+        dat = CenDate(dat)
+    if temp['phones']:
+        dat = CenNum(dat)
+    if temp['addresses']:
+        dat = CenLoc(dat)
+    return dat, Statistics
 
-def read_and_censor_file(file_path, censor_flags):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        content = file.read()
-        censored_content, stats = censor_content(content, censor_flags)
-        return censored_content, stats
+def Input(dir, temp):
+    with open(dir, 'r', encoding='utf-8') as file:
+        dat = file.read()
+        Ccd, Statistics = CenInf(dat, temp)
+        return Ccd, Statistics
 
-def write_censored_file(original_path, censored_content, output_dir):
-    base_name = os.path.basename(original_path)
-    censored_file_path = os.path.join(output_dir, f"{base_name}.censored")
-    with open(censored_file_path, 'w', encoding='utf-8') as censored_file:
-        censored_file.write(censored_content)
+def Output(Xtemp, Ccd, Odir):
+    OldN = os.path.basename(Xtemp)
+    Cdir = os.path.join(Odir, f"{OldN}.censored")
+    with open(Cdir, 'w', encoding='utf-8') as OldExt:
+        OldExt.write(Ccd)
 
-def write_statistics(stats, stats_output):
-    if stats_output in ['stderr', 'stdout']:
-        output_stream = getattr(sys, stats_output)
-        output_stream.write(str(stats) + '\n')
-    else:
-        with open(stats_output, 'w', encoding='utf-8') as stats_file:
-            stats_file.write(str(stats) + '\n')
 
-def process_files(file_paths, censor_flags, output_dir, stats_output):
-    overall_stats = {'dates': 0, 'phones': 0, 'names': 0, 'addresses': 0}
-    for file_path in file_paths:
-        censored_content, file_stats = read_and_censor_file(file_path, censor_flags)
-        for key in overall_stats:
-            overall_stats[key] += file_stats[key]
-        write_censored_file(file_path, censored_content, output_dir)
-    write_statistics(overall_stats, stats_output)
+def parg():
+    varx = argparse.ArgumentParser(description="Censoring important and sensitive data from text documents")
+    varx.add_argument('--input', type=str, action='append', help='Input files using Glob pattern')
+    varx.add_argument('--names', action='store_true', help='Censoring Names')
+    varx.add_argument('--dates', action='store_true', help='Censoring Dates')
+    varx.add_argument('--phones', action='store_true', help='Censoring Phone Numbers')
+    varx.add_argument('--addresses', action='store_true', help='Censoring Location or Address')
+    varx.add_argument('--output', type=str, help='Output directory for Censored files') 
+    varx.add_argument('--stats', type=str, help='Statistics Output Destination')
+    return varx.parse_args()
 
-if __name__ == "__main__":
-    args = parse_arguments()
-    file_paths = expand_globs(args.input)
-    censor_flags = {
+def main():
+    args = parg()
+    list = []
+    for x in args.input:
+        list.extend(glob.glob(x))
+
+    temp = {
         'names': args.names,
         'dates': args.dates,
         'phones': args.phones,
-        'address': args.address
+        'addresses': args.addresses
     }
-    process_files(file_paths, censor_flags, args.output, args.stats)
+
+    Show = {'names': 0, 'phones': 0, 'dates': 0, 'addresses': 0}
+    for x in args.input:
+        CDat, DocSt = Input(x, temp)
+        for Y in Show:
+            Show[Y] += DocSt[Y]
+        Output(x, CDat, args.output)
+ 
+    if args.stats in ['stderr', 'stdout']:
+        X = getattr(sys, args.stats)
+        X.write(str(Show) + '\n')
+    else:
+        with open(args.stats, 'w', encoding='utf-8') as CountF:
+            CountF.write(str(Show) + '\n')
+
+if __name__ == "__main__":
+    main()
+    
