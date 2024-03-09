@@ -6,7 +6,7 @@ import sys
 import spacy
 
 # Load spaCy English model
-nlp = spacy.load("en_core_web_lg")
+nlp = spacy.load("en_core_web_md")
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Censor sensitive information from text files.")
