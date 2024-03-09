@@ -1,5 +1,5 @@
 def main():
-  assert =True
+  assert True
 
 if __name__ == "__main__":
     main()
