@@ -50,11 +50,16 @@ Overall, collecting statistics on the censoring process helped in ensuring that 
 
 The process of developing the code involves the following steps:
 
-1. Open and read the text files containing the emails to be censored.<br>
-2. Define a function to censor a specific word or phrase in a piece of text. This function takes the text and the word or phrase to be censored as arguments, and replaces all occurrences of the word or phrase with a string of asterisks or another character of the same length.<br>
-3. Define a function to censor multiple words or phrases in a piece of text. This function takes the text and a list of words or phrases to be censored as arguments, and applies the censor function to each word or phrase in the list.<br>
-4. Define a function to censor words or phrases in a specific context, such as within a certain distance of each other. This function takes the text and a list of words or phrases to be censored as arguments, and uses regular expressions to identify and censor the words or phrases in the specified context.<br>
-5. Test the censoring functions on sample text to ensure that they are working correctly.<br>
+1. **Research existing libraries and API's (some are provided in the assignment description)**: I have explored various libraries and APIs that offer natural language processing (NLP) capabilities for entity recognition and text manipulation. SpaCy and Google Cloud Natural Language API libraries are chosen for this assignment.<br>
+2. **Defining the command-line interface**: The argparse module is used to define command-line arguments for reading specifying input files, censoring flags, writing in output directory, and printing stats.<br>
+3. **Implementing functions**: Functions like parg() for argument parsing, analyze_entities() for entity recognition, censor() for censoring sensitive information, and others are implemented.<br>
+4. **Error handling**: The code includes some exception handling to manage errors that might occur during file reading, writing or processing.<br>
+5. **Testing**:<br>
+   i) The code is manually tested with various input files containing different types of sensitive information to ensure that it correctly identifies and censors them.<br>
+   ii) Unit testing using pytest written to verify the functionality of individual functions.<br>
+   iii) Test with edge cases such as empty files, files with no sensitive information, and files containing only sensitive information.<br>
+6. Review the code for performance and accuracy using stats for various libraries to check and choose best libraries.
+
 
 
 ## How to install
@@ -79,53 +84,85 @@ pipenv run python -m pytest
 ## Demo Implementation 
 
 video link: [Data Engineering Assignment1 demo](https://github.com/Aryaan03/cis6930sp24-assignment1/blob/main/DE_Assignment-1_Demo.mp4)
-<br>The video is also available in the repository in good quality.
-![](https://github.com/Aryaan03/cis6930sp24-assignment1/blob/main/DE_Assignment-1_DemoGIF.gif)
+<br>
+![](https://github.com/Aryaan03/cis6930sp24-assignment1/blob/main/DE_Assignment-1_DemoGIF.gif)<br>
+The video is also available in the repository in good quality.<br>
 
 ## Functions
 #### main 
 
    1. `parg()`<br>
-         • Description:<br> This function parses command-line arguments using the argparse module.<br>
-         • Parameters:<br> None<br>
-         • Return:<br> An argparse.Namespace object containing the parsed arguments.<br>
+         • Description:<br>
+         &emsp;&emsp;- This function parses command-line arguments using the argparse module.<br>
+         &emsp;&emsp;- Facilitates the retrieval of user-provided options using argparse.<br>
+         • Parameters:<br>
+      &emsp;&emsp;- None<br>
+         • Return:<br>
+         &emsp;&emsp;- An argparse.Namespace object containing the parsed arguments.<br>
 
    2. `case(x)`<br>
-        • Description: <br> This function filters out tokens that are entirely composed of digits.<br>
+        • Description: <br>
+        &emsp;&emsp;- This function filters out tokens using Regex.<br>
+        &emsp;&emsp;- Prepares a list of tokens excluding digit-only entries for subsequent processing.
         • Parameters:<br>
-            x: A list of strings (tokens).<br>
-        • Return: <br>A list of strings (tokens) that do not consist solely of digits.<br>
+            &emsp;&emsp;- `x`: A list of strings (tokens).<br>
+        • Return: <br>
+        &emsp;&emsp;- A list of strings (tokens) that do not consist solely of digits.<br>
 
   3. `censor(info, type)`<br>
-        • Description: <br>This function replaces sensitive information in a given string with a block character.<br>
+        • Description: <br>
+        &emsp;&emsp;- This function replaces sensitive information in a given string with a block character.<br>
+        &emsp;&emsp;- Uses unicode character '█' (U+2588) to censor sensitive data.<br>
         • Parameters:<br>
-            info: The input string containing sensitive information.<br>
-            type: A list of strings representing sensitive information.<br>
-        • Return:<br>The input string with sensitive information replaced by block characters.<br>
+            &emsp;&emsp;`info`: The input string containing sensitive text.<br>
+            &emsp;&emsp;`type`: A list of strings representing sensitive text.<br>
+        • Return:<br>
+         &emsp;&emsp;- The input string with sensitive information replaced by block characters.<br>
 
    4. `analyze_entities(MailData)`<br>
-        • Description: <br>This function analyzes entities in text using both SpaCy and Google Cloud Natural Language API.<br>
+        • Description: <br>
+         &emsp;&emsp;- This function analyzes entities in text using both `SpaCy` and `Google Cloud Natural Language API`.<br>
+         &emsp;&emsp;- Identifies entities: names, dates, phone numbers, and addresses.<br>
+         &emsp;&emsp;- Extracting person label from the text using `SpaCy` package.<br>
+         &emsp;&emsp;- Analyzes Dates, Phone Number and addresses in text using `Google Cloud Natural Language API` package.<br>
+         &emsp;&emsp;- Calculates statistics of types and counts of different entities.<br>
         • Parameters:<br>
-            MailData: The text to be analyzed.<br>
-        • Return: <br>A tuple containing a list of entities found in the text and a list of statistics regarding the entities (number of dates, phone numbers, addresses, and person names).<br>
+           &emsp;&emsp;- `MailData`: The input text to be analyzed.<br>
+        • Return: <br>
+        &emsp;&emsp;- A tuple containing a list of entities found in the text and a list of statistics regarding the entities (statistics of dates, phone numbers, addresses, and person names).<br>
 
    5. `CenP(data)`<br>
-        • Description: <br>This function censors sensitive information in text data.<br>
+        • Description: <br>
+        &emsp;&emsp;- This function censors sensitive information in text data by.<br>
+        &emsp;&emsp;- calls analyze_entities and censor function to replace identified entities with block characters to obscure sensitive details.<br>
+        &emsp;&emsp;- Prints statistics of censored flags.<br>
         • Parameters:<br>
-            data: The text data to be censored.<br>
-        • Return: <br>The censored text data.<br>
+            &emsp;&emsp;- `data`: The text data to be censored.<br>
+        • Return: <br>
+        &emsp;&emsp;- The censored text data.<br>
 
    6. `Read(Xtemp, CCd)`<br>
-        • Description: <br>This function reads files, censors sensitive information, and writes the censored data to new files.<br>
+        • Description: <br>
+        &emsp;&emsp;- This function reads input files, calls `CenP()` function to censore sensitive information in the text.<br>
+        &emsp;&emsp;- Writing censored text to a new file.<br>
+        &emsp;&emsp;- Ensures secure handling of sensitive text during file processing.<br>
         • Parameters:<br>
-            Xtemp: A list of file paths to be read.<br>
-            CCd: The directory where censored files will be saved.<br>
-        • Return: <br>None.<br>
+            &emsp;&emsp;- `Xtemp`: A list of file paths to be read.<br>
+            &emsp;&emsp;- `CCd`: The directory where censored files will be saved.<br>
+        • Return: <br>
+        &emsp;&emsp;- None.<br>
 
    7. `main()`<br>
-        • Description: <br>This function serves as the main entry point of the script. It parses command-line arguments, identifies input files, processes them, and performs censorship based on specified flags.<br>
-        • Parameters: <br>None<br>
-        • Return: <br>None.<br>
+        • Description: <br>
+        &emsp;&emsp;- This function serves as the main entry point of the script.<br>
+        &emsp;&emsp;- It parses command-line arguments, identifies input files, processes them, and performs censorship based on specified flags.<br>
+        &emsp;&emsp;- Creates an output directory if it doesn't exist.<br>
+        &emsp;&emsp;- Handles some exceptions like Printing an error message to prompt user for specifing censoring flags.<br>
+        &emsp;&emsp;- Prints error message if input files is not found.<br>
+        • Parameters: <br>
+        &emsp;&emsp;- None<br>
+        • Return: <br>
+        &emsp;&emsp;- None.<br>
         
         
 ## Testing
@@ -133,38 +170,43 @@ video link: [Data Engineering Assignment1 demo](https://github.com/Aryaan03/cis6
 Testing using pytest & mocking is done to make sure that all the functions are working independently and properly. Testing is crucial for early bug detection and maintaining code quality. Testing units of code encourages modular, understandable code and integrates seamlessly into continuous integration workflows, boosting integrity. Ultimately, all major functions like test_read, test_empty_group, test_input and more are tested if they are functioning properly. For example. test_read verifies if  the analyze_entities function returns an empty list when given an empty input string or not. 
 
     1.  test_group
-        Purpose: This test is checking if the analyze_entities function correctly extracts named entities of type "PERSON" from the provided text.
+        Purpose: 
+            -> This test is checking if the analyze_entities function correctly extracts named entities of type "PERSON" from the provided text.
         Steps:
-            Create a mock language processing model.
-            Create mock entities with names and labels.
-            Set up the mock model to return the mock entities.
-            Call analyze_entities with a sample input string.
-            Check if the extracted entities match the expected outcome.
+            -> Create a mock language processing model.
+            -> Create mock entities with names and labels.
+            -> Set up the mock model to return the mock entities.
+            -> Call analyze_entities with a sample input string.
+            -> Check if the extracted entities match the expected outcome.
 
      2. test_read
-        Purpose: This test checks if the analyze_entities function returns an empty list when given an empty input string.
+        Purpose: 
+            -> This test checks if the analyze_entities function returns an empty list when given an empty input string.
         Steps:
-            Call analyze_entities with two empty strings.
-            Check if the result is an empty list.
+            -> Call analyze_entities with two empty strings.
+            -> Check if the result is an empty list.
 
     3. test_input
-        Purpose: This test checks if the analyze_entities function returns an empty list when there are no entities in the provided text.
+        Purpose: 
+            -> This test checks if the analyze_entities function returns an empty list when there are no entities in the provided text.
         Steps:
-            Call analyze_entities with a text string that does not contain any entities.
-            Check if the result is an empty list.
+            -> Call analyze_entities with a text string that does not contain any entities.
+            -> Check if the result is an empty list.
 
     4. test_censor
-        Purpose: This test checks if the analyze_entities function correctly identifies entities in the provided text.
+        Purpose: 
+            -> This test checks if the analyze_entities function correctly identifies entities in the provided text.
         Steps:
-            Call analyze_entities with a text string containing a date.
-            Check if the result matches the expected list of entities (in this case, a list containing a date).
+            -> Call analyze_entities with a text string containing a date.
+            -> Check if the result matches the expected list of entities (in this case, a list containing a date).
 
   
 ## Bugs and Assumptions
 
 • Assuming that atleast any one of the flag should be present in the run command. <br>
 • A large text files or a high volume of data exceeding system memory or processing limits, can lead to performance degradation or application crashes.<br>
-• All the entities are not accurately detected, it leaves some entities accordind to the model selected.<br>
+• All the entities are not accurately detected, it leaves some entities according to the model selected. 
+• I have used en_core_web_md model as given in assignment descrption. I could have used the large model(en_core_web_md) but it detects some extra data which should not be sensored compared to the Spacy medium English model.<br>
 • Known bug: Some txt files with unsual formatting are not able to parse.<br> 
 • It does not check censor names in email addresses. <br>
 • No bugs apart from those mentioned above are known/identified.
