@@ -80,7 +80,7 @@ pipenv run python -m pytest
 
 ## Demo Implementation 
 
-video link: [Data Engineering Assignment0 demo](https://github.com/Aryaan03/cis6930sp24-assignment0/blob/main/DE-A0_demo.mp4)
+video link: [Data Engineering Assignment1 demo](https://github.com/Aryaan03/cis6930sp24-assignment1/blob/main/DE_Assignment_1.mp4)
 <br>The video is also available in the repository in good quality.
 
 ## Functions
@@ -163,13 +163,11 @@ Testing using pytest & mocking is done to make sure that all the functions are w
   
 ## Bugs and Assumptions
 
-• Assuming that the structure of the PDF files provided by the Norman, Oklahoma police department remains consistent across different reports. If the structure changes, it could break the extraction process. <br>
-• A large PDF files or a high volume of data exceeding system memory or processing limits, can lead to performance degradation or application crashes.<br>
-• Not all columns of a row can be empty at the same time. There should be some entry in atleast one cell of every row.<br>
-• All fields, excluding the 'Nature' field will consist of alphanumeric characters.<br>
-• Assuming that empty entries are only possible in the 'Nature' column. If there are empty entries in any other column it might break the extraction.<br>
-• Known bug: Some pdfs that have unsual formatting are not able to parse.<br> 
-• If there are multiple lines in a single cell, then only the first line will be parsed. There is no such cases where the 'Nature' column had multiple lines of text. So, it was not tested. But, if it has, this can be a potential bug.<br>
+• Assuming that atleast any one of the flag should be present in the run command. <br>
+• A large text files or a high volume of data exceeding system memory or processing limits, can lead to performance degradation or application crashes.<br>
+• All the entities are not accurately detected, it leaves some entities accordind to the model selected.<br>
+• Known bug: Some txt files with unsual formatting are not able to parse.<br> 
+• It does not check censor names in email addresses. <br>
 • No bugs apart from those mentioned above are known/identified.
 
 
@@ -187,4 +185,4 @@ This project is licensed by Aryaan Shaikh©2024.
 • [Christan Grant](https://github.com/cegme)- Providing the problem Statement <br>
 • [Yifan Wang](https://github.com/wyfunique)- Testing our code<br>
 • [Pipenv: Python Dev Workflow for Humans](https://pipenv.pypa.io/en/latest/)- Helped me in Installing Pipenv <br>
-• [Extract Text from a PDF](https://pypdf.readthedocs.io/en/latest/user/extract-text.html)- Helped me in extracting text in a fixed width format and changing cells<br>
+• [Google API services](https://cloud.google.com/products?utm_source=google&utm_medium=cpc&utm_campaign=na-US-all-en-dr-bkws-all-all-trial-b-dr-1707554&utm_content=text-ad-none-any-DEV_c-CRE_665735422238-ADGP_Hybrid+%7C+BKWS+-+MIX+%7C+Txt-Google+Products-Google+Products+General-KWID_43700077225654153-kwd-305853018146&utm_term=KW_google%20cloud%20api-ST_google+cloud+api&gad_source=1&gclid=CjwKCAiA0bWvBhBjEiwAtEsoW4c9xSrIqN7aa-RqxnDZEvpJvMpjHFvof4xKSOGmutlJ6hapBB_iPBoCW4kQAvD_BwE&gclsrc=aw.ds)- Helped me in understanding google natural language usage<br>
