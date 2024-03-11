@@ -131,36 +131,36 @@ video link: [Data Engineering Assignment0 demo](https://github.com/Aryaan03/cis6
         
 ## Testing
 
-Testing using pytest & mocking is done to make sure that all the functions are working independently and properly. Testing is crucial for early bug detection and maintaining code quality. Testing units of code encourages modular, understandable code and integrates seamlessly into continuous integration workflows, boosting integrity. Ultimately, all major functions like Retrieve, ExtractData, CreateDB and more are tested if they are functioning properly. For example. test_create verifies if a database and table is created or not. 
+Testing using pytest & mocking is done to make sure that all the functions are working independently and properly. Testing is crucial for early bug detection and maintaining code quality. Testing units of code encourages modular, understandable code and integrates seamlessly into continuous integration workflows, boosting integrity. Ultimately, all major functions like test_read, test_empty_group, test_input and more are tested if they are functioning properly. For example. test_read verifies if  the analyze_entities function returns an empty list when given an empty input string or not. 
 
+    1.  test_group
+        Purpose: This test is checking if the analyze_entities function correctly extracts named entities of type "PERSON" from the provided text.
+        Steps:
+            Create a mock language processing model.
+            Create mock entities with names and labels.
+            Set up the mock model to return the mock entities.
+            Call analyze_entities with a sample input string.
+            Check if the extracted entities match the expected outcome.
 
-    1. `test_Retrieve`:
-        - Utilizes mocking to validate individual functions.
-        - Uses mock versions of urllib.request.urlopen to simulate fetching data from a URL.
-        - Dummy data ('Some Dummy data') is provided instead of actual network requests.
-        - The URL variable serves as input for testing the fetchIncidents function.
+     2. test_read
+        Purpose: This test checks if the analyze_entities function returns an empty list when given an empty input string.
+        Steps:
+            Call analyze_entities with two empty strings.
+            Check if the result is an empty list.
 
-    2. `test_Extraction`:
-        - Mocks the PDF library to control page content.
-        - Creates dummy pages with predefined text for testing text extraction.
-        - Ensures the extracted text matches expected output, validating correct text extraction without real PDFs.
+    3. test_input
+        Purpose: This test checks if the analyze_entities function returns an empty list when there are no entities in the provided text.
+        Steps:
+            Call analyze_entities with a text string that does not contain any entities.
+            Check if the result is an empty list.
 
-    3. `test_Create`:
-        - Uses mocking to verify the createdb function successfully creates a database and table.
-        - Checks if sqlite3.connect is called with correct arguments.
-        - Verifies expected SQL queries are executed on the mock cursor.
-        - Ensures commit and close methods are called on the mock connection.
+    4. test_censor
+        Purpose: This test checks if the analyze_entities function correctly identifies entities in the provided text.
+        Steps:
+            Call analyze_entities with a text string containing a date.
+            Check if the result matches the expected list of entities (in this case, a list containing a date).
 
-    4. `test_Populate`:
-        - Mocks sqlite3.connect to verify data insertion calls and expected queries.
-        - Validates if commit and close occur on the mock connection.
-        - Verifies data insertion follows table format, ensuring correct function behavior without a real database.
-
-    5. `test_Status`:
-        - Mocks the database connection to return desired data.
-        - Captures printed output of the status function.
-        - Compares captured output to expected string, verifying correct output generation using mocked data.
-
+  
 ## Bugs and Assumptions
 
 • Assuming that the structure of the PDF files provided by the Norman, Oklahoma police department remains consistent across different reports. If the structure changes, it could break the extraction process. <br>
