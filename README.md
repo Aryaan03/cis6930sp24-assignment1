@@ -84,139 +84,51 @@ video link: [Data Engineering Assignment0 demo](https://github.com/Aryaan03/cis6
 <br>The video is also available in the repository in good quality.
 
 ## Functions
-#### main file
-1. `RetrieveIncidents(url)`<br>
-    • Description: <br>
-        &emsp;- Downloads/Fetches incident data from a given URL.<br>
-        &emsp;- The `urllib.request` module is used to execute an HTTP request and retrieve the data.<br>
-        &emsp;- Data is stored locally in a local variable and not at any specific location (tmp folder) for using it for both making a SQL database and also for retreiving data.<br>
-        &emsp;- Constructs a request with a custom user agent to access the provided URL.<br>
-    • Parameters: <br>
-        &emsp;- `url`(str), The URL from which the incident data is to be fetched.<br>
-    • Returns:<br>
-        &emsp;- `data`; The fetched incident data.<br>
+#### main 
 
-2. `ExtractData(IncidentData)`<br>
-    • Description: <br>
-        &emsp;- This function extracts incident information from the incident PDF file using Pypdf.<br>
-        &emsp;- Reads the incident data from a PDF using `pypdf.PdfReader` and `io.BytesIO`.<br>
-        &emsp;- Extracts text from each page of the PDF using the layout mode and concatenates it into a single string.<br>
-    • Parameters: <br>
-        &emsp;- `IncidentData`(bytes), The incident data in PDF format.<br>
-    • Returns:<br>
-        &emsp;- `ExtractText`; The extracted text from the incident data PDF.<br>
+   1. `parg()`<br>
+         • Description:<br> This function parses command-line arguments using the argparse module.<br>
+         • Parameters:<br> None<br>
+         • Return:<br> An argparse.Namespace object containing the parsed arguments.<br>
 
-3. `CreateDB(Norman, Tab, Header)`<br>
-    • Description: <br>
-        &emsp;- This function creates a new SQLite database and a table based on the provided parameters using the `sqlite3` module.<br>
-        &emsp;- It will create an SQLite table named "Tab" with specific columns for incident details like known previously like time, number, location, nature, and origin.<br>
-        &emsp;- It Drops the table if it already exists and Creates a new table with the schema based on the provided header information.<br>
-    • Parameters: <br>
-        &emsp;- `Norman`(str); The name of the SQLite database file.<br>
-        &emsp;- `Tab`(str); The name of the table to be created.<br>
-        &emsp;- `Header`(list); The header information for the table.<br>
-    • Returns:<br>
-        &emsp;- None<br>
+   2. `case(x)`<br>
+        • Description: <br> This function filters out tokens that are entirely composed of digits.<br>
+        • Parameters:<br>
+            x: A list of strings (tokens).<br>
+        • Return: <br>A list of strings (tokens) that do not consist solely of digits.<br>
 
-4. `PopulateDB(Norman, Tab, Line)`<br>
-    • Description: <br>
-        &emsp;- This function populates the SQLite database with the provided data using the `sqlite3` module.<br>
-        &emsp;- Constructs an SQL query to insert the provided data using the `INSERT` query into the specified table.<br>
-        &emsp;- Executes the query for each set of data to be inserted into the table.<br>
-    • Parameters: <br>
-        &emsp;- `Norman`(str); The name of the SQLite database file.<br>
-        &emsp;- `Tab`(str); The name of the table to be created.<br>
-        &emsp;- `Line`(list); The data to be inserted into the table.<br>
-    • Returns:<br>
-        &emsp;- None<br>
+  3. `censor(info, type)`<br>
+        • Description: <br>This function replaces sensitive information in a given string with a block character.<br>
+        • Parameters:<br>
+            info: The input string containing sensitive information.<br>
+            type: A list of strings representing sensitive information.<br>
+        • Return:<br>The input string with sensitive information replaced by block characters.<br>
 
-5. `Insert(Information)`<br>
-    • Description: <br>
-        &emsp;- This function processes the incident information into the database.<br>
-        &emsp;- It initializes a list and appends the rows in it.<br>
-    • Parameters: <br>
-        &emsp;- `Information` (list); List of incident information.<br>
-    • Returns:<br>
-        &emsp;- `Latest`(list); The filtered and inserted information.<br>
+   4. `analyze_entities(MailData)`<br>
+        • Description: <br>This function analyzes entities in text using both SpaCy and Google Cloud Natural Language API.<br>
+        • Parameters:<br>
+            MailData: The text to be analyzed.<br>
+        • Return: <br>A tuple containing a list of entities found in the text and a list of statistics regarding the entities (number of dates, phone numbers, addresses, and person names).<br>
 
-6. `Status(Norman, Tab)`<br>
-    • Description: <br>
-        &emsp;- This function retrieves and displays the status of incidents in the database using SQL queries and the `sqlite3` module.<br>
-        &emsp;- It Retrieves and prints a list of incidents and their occurrence count, sorted alphabetically by nature, from the specified database table.<br>
-    • Parameters: <br>
-        &emsp;- `Norman`(str); The name of the SQLite database file.<br>
-        &emsp;- `Tab`(str); The name of the table to be created.<br>
-    • Returns:<br>
-        &emsp;- None<br>
+   5. `CenP(data)`<br>
+        • Description: <br>This function censors sensitive information in text data.<br>
+        • Parameters:<br>
+            data: The text data to be censored.<br>
+        • Return: <br>The censored text data.<br>
+
+   6. `Read(Xtemp, CCd)`<br>
+        • Description: <br>This function reads files, censors sensitive information, and writes the censored data to new files.<br>
+        • Parameters:<br>
+            Xtemp: A list of file paths to be read.<br>
+            CCd: The directory where censored files will be saved.<br>
+        • Return: <br>None.<br>
+
+   7. `main()`<br>
+        • Description: <br>This function serves as the main entry point of the script. It parses command-line arguments, identifies input files, processes them, and performs censorship based on specified flags.<br>
+        • Parameters: <br>None<br>
+        • Return: <br>None.<br>
         
-7. `Calculate(Norman, Tab)`:<br>
-    • Description: <br>
-       &emsp;- This function executes an SQL query to count the number of entries in the specified database table and returns the count.<br>
-       &emsp;- This function also iterstes through all the rows and prints it from the incident table by executing a SQL query using the `sqlite3` module.<br>
-       &emsp;- It retrieves and prints all rows from the specified database table. <br>
-    • Parameters: <br>
-       &emsp;- `Norman`(str); The name of the SQLite database file.<br>
-       &emsp;- `Tab`(str); The name of the table to be created.<br>
-    • Returns:<br>
-       &emsp;- `count`(int); The number of entries in the incident table.<br>
-
-8. `main(url)`:<br>
-    • Description: <br>
-        &emsp; - Invokes all other functions. <br>
-        &emsp;- Calls the `RetrieveIncidents(url)` function to download incident data from the provided URL.<br>
-        &emsp;- Calls the `ExtractData()` function to extract text from the downloaded incident data PDF.<br>
-        &emsp;- Parses the extracted text to obtain relevant information such as incident time, number, location, nature, and origin. <br>
-        &emsp;- Creates a new SQLite database using the `CreateDB` function Populates the database with the parsed information using the `PopulateDB` function.<br>
-        &emsp;- Calls the `Status` function to retrieve and display the status of incidents in the populated database.<br>
-        &emsp;- Defines a command-line interface using `argparse`.<br>
-        &emsp;- Parses the command-line arguments, specifically the `--incidents` argument for the URL.<br>
-    • Parameters:<br>
-        &emsp; - `url`(str); The URL from which the incident data is to be fetched.<br>
-    • Returns:<br>
-         &emsp; - List of Nature of incidents along with the number of times it occurred long with the number of times it has happened separated by the pipe character.
         
-   
-## Database Development
-
-    1. Database Creation:
-        - A SQLite database is created to store the incident data.
-        - Database is created using `CreateDB()` function.
-        - The structure of the incident table is defined based on the extracted header information.
-        - Data is stored in a local variable so that it can not only be used for retrieving data but also for populating the databse.
-
-    2. Connect to the Database (`CreateDB()`):
-        - Establish a connection to an SQLite database named "normanpd.db" using the `sqlite3` module.
-        - Create a cursor to interact with the database.
-
-    3. Data Population(`PopulatedDB()` and `Insert()`:
-        - The extracted incident data is inserted into the SQLite database usind `PopulatedDB()` function.
-        - Run an SQL command to check if the table already exists, if so delete the 'incidents' table and create a new table.
-        - Queries are used to execute SQL statements for creating table and headers.
-        - For insertion 'INSERT' statement is used.
-        - Implementing the 'INSERT' command using the cursor.
-        - Each row of incident data corresponds to an entry in the database table.
-
-    4. Data Status and Printing:
-        - The script provides functionality to query the database for statistical analysis of incident data.
-        - Running an SQL query to obtain the number of incidents categorized by nature from the 'incidents' table. 
-        - Ordering results by count (descending) and then by alphabetically by nature.   
-        - Display type of nature of incident along with their respective counts seperated by a pipe '|' symbol. 
-        
-    5. Command-line Interface:
-        - The script can be executed from the command line.
-        - Users provide the URL of the incident summary PDF file as a command-line argument.
-        
-
-Below is a brief overview on how to establish connection, take data, make table, insert, query and close the connection to database:
-        
-    -> Begin by establishing a connection to the "normanpd.db" SQLite database using the sqlite3 module and create a cursor to interact with it.
-    -> Next, craft an SQL statement to generate a table named "incidents" within the database, outlining the columns like incident_time, incident_number, incident_location, nature, and incident_ori, assigning suitable data types to each, such as TEXT.
-    -> Proceed to populate the "incidents" table by iterating through each incident entry in the extracted data. For each entry, formulate an SQL INSERT statement to add the data into the table, executing it with the cursor, and confirming the changes.
-    -> Utilize an SQL query to gather the incident count grouped by nature from the "incidents" table. Arrange the results by count in descending order and then alphabetically by nature.
-    -> Display the sorted incident data in the format "nature | count," providing a clear overview of the incident nature alongside the corresponding count.
-    -> Retrieve all incident data by executing an SQL query to fetch all information from the "incidents" table, returning a list of tuples representing each incident.
-    -> Finally, if the "incidents" table already exists, execute an SQL statement to drop it, preventing conflicts when creating a new table.
-
 ## Testing
 
 Testing using pytest & mocking is done to make sure that all the functions are working independently and properly. Testing is crucial for early bug detection and maintaining code quality. Testing units of code encourages modular, understandable code and integrates seamlessly into continuous integration workflows, boosting integrity. Ultimately, all major functions like Retrieve, ExtractData, CreateDB and more are tested if they are functioning properly. For example. test_create verifies if a database and table is created or not. 
