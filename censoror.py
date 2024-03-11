@@ -117,10 +117,10 @@ def main():
         else:
             os.makedirs(tem.output, exist_ok=True)  # Creating the output directory if it doesn't exist
 
-            censor_flags = {"names": tem.names, "dates": tem.dates, "phones": tem.phones, "address": tem.address}
-            selected_flags = [flag for flag, value in censor_flags.items() if value]
+            temp = {"names": tem.names, "dates": tem.dates, "phones": tem.phones, "address": tem.address}
+            SFlag = [flag for flag, value in temp.items() if value]
 
-            if selected_flags:
+            if SFlag:
                 Read(list, tem.output)  # Reading and censoring files if censoring flags are specified
             else:
                 print("Mention some Censor flag")  # Prompting user to specify censoring flags
