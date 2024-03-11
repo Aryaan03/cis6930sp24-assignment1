@@ -55,8 +55,6 @@ The process of developing the censoring system involves the following steps:
 3. Define a function to censor multiple words or phrases in a piece of text. This function takes the text and a list of words or phrases to be censored as arguments, and applies the censor function to each word or phrase in the list.<br>
 4. Define a function to censor words or phrases in a specific context, such as within a certain distance of each other. This function takes the text and a list of words or phrases to be censored as arguments, and uses regular expressions to identify and censor the words or phrases in the specified context.<br>
 5. Test the censoring functions on sample text to ensure that they are working correctly.<br>
-6. Apply the censoring functions to the emails to be censored, and write the censored emails to new text files with the .censored extension.
-
 
 
 ## How to install
