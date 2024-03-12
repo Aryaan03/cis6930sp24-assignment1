@@ -249,7 +249,7 @@ Testing using pytest & mocking is done to make sure that all the functions are w
 
     5. `test_phone_numbers`
         Purpose: 
-        - Tests the CenLoc function, which is expected to detect phone numbers in a given text.
+        - Tests the `CenNum` function, which is expected to detect phone numbers in a given text.
         Steps:
               -> Mock the Google Cloud NLP API using the @patch decorator.
               -> Define mock data for the API response.
