@@ -273,7 +273,7 @@ Testing using pytest & mocking is done to make sure that all the functions are w
 
 • Assuming that atleast any one of the flag should be given in the run command. <br>
 • A large text files or a high volume of data exceeding system memory or processing limits, can lead to performance degradation or application crashes.<br>
-• All the entities are not accurately detected, it leaves some entities according to the model selected. 
+• All the entities are not accurately detected, it leaves some entities according to the model selected.<br>
 • I have used en_core_web_md model as given in assignment description. I could have used the large model(en_core_web_md) but it detects some extra data which should not be sensored compared to the Spacy medium English model.<br>
 • Known bug: Some txt files with unsual formatting are not able to parse.<br> 
 • It does not check censor names in email addresses. <br>
