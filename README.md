@@ -46,6 +46,10 @@ Statistics can also be used for tracking the progress of the code over time. By 
 
 Overall, collecting statistics on the censoring process helped in ensuring that code is working correctly and efficiently, and provided valuable insights into the performance and behavior of the code.
 
+### Why I have prefered en_core_web_md spacy model over en_core_web_lg model?
+
+
+
 ### Process of developing code
 
 The process of developing the code involves the following steps:
@@ -167,7 +171,7 @@ The video is also available in the repository in good quality.<br>
         
 ## Testing
 
-Testing using pytest & mocking is done to make sure that all the functions are working independently and properly. Testing is crucial for early bug detection and maintaining code quality. Testing units of code encourages modular, understandable code and integrates seamlessly into continuous integration workflows, boosting integrity. Ultimately, all major functions like test_read, test_empty_group, test_input and more are tested if they are functioning properly. For example. test_read verifies if  the analyze_entities function returns an empty list when given an empty input string or not. 
+Testing using pytest & mocking is done to make sure that all the functions are working independently and properly. Testing is crucial for early bug detection and maintaining code quality. Testing units of code encourages modular, understandable code and integrates seamlessly into continuous integration workflows, boosting integrity. Ultimately, all major functions like test_names, test_dates, test_addresses, test_phone_numbers and more are tested if they are functioning properly. For example. test_names verifies if the spacy model is able to identify names in the given text file. 
 
     1.  test_group
         Purpose: 
