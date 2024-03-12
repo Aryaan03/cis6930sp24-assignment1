@@ -209,7 +209,7 @@ The video is also available in the repository in good quality.<br>
 
 Testing using pytest & mocking is done to make sure that all the functions are working independently and properly. Testing is crucial for early bug detection and maintaining code quality. Testing units of code encourages modular, understandable code and integrates seamlessly into continuous integration workflows, boosting integrity. The given unittesting code tests various functions related to censoring sensitive information such as names, dates, addresses, and phone numbers in a given text. Ultimately, all major functions like test_names, test_dates, test_addresses, test_phone_numbers and more are tested if they are functioning properly. For example. test_names verifies if the spacy model is able to identify names in the given text file. 
 
-    1.  `test_censor`
+    1.  `test_censor_function`
         Purpose: 
         - Tests the `censor` function, which is expected to replace sensitive information in a given text with a block character.
         Steps:
