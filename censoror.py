@@ -12,8 +12,6 @@ from nltk.corpus import stopwords
 from google.cloud import language_v1  
 # Google Cloud Natural Language API
 
-# spacy.cli.download("en_core_web_md") # Downloading the English model for spaCy
-
 Model = spacy.load("en_core_web_md") # Loading the English model for spaCy
 
 def ArgParse():
