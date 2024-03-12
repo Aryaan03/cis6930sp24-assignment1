@@ -217,7 +217,7 @@ Testing using pytest & mocking is done to make sure that all the functions are w
             -> Invokes the `censor` function with the test data.
             -> Asserts that the output matches the expected output
 
-     2. `test_CenName` 
+     2. `test_names` 
         Purpose: 
         -  Tests the `CenName` function, which is expected to detect names in a given text.
         Steps:
@@ -227,7 +227,7 @@ Testing using pytest & mocking is done to make sure that all the functions are w
              -> Invoke the `CenName` function with the test data.
              -> Assert that the detected names match the expected output.
 
-    3. `test_CenDate`
+    3. `test_dates`
         Purpose: 
         - Tests the `CenDate` function, which is expected to detect dates in a given text.
         Steps:
@@ -237,7 +237,7 @@ Testing using pytest & mocking is done to make sure that all the functions are w
              -> Invoke the `CenDate` function with the test data.
              -> Assert that the detected dates match the expected output.
 
-    4. `test_CenLoc`
+    4. `test_addresses`
         Purpose: 
         - Tests the `CenLoc` function, which is expected to detect addresses in a given text.
         Steps:
@@ -247,7 +247,7 @@ Testing using pytest & mocking is done to make sure that all the functions are w
              -> Invoke the `CenLoc` function with the test data.
              -> Assert that the detected addresses match the expected output.
 
-    5. `test_CenNum`
+    5. `test_phone_numbers`
         Purpose: 
         - Tests the CenLoc function, which is expected to detect phone numbers in a given text.
         Steps:
