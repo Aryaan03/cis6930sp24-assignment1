@@ -48,7 +48,7 @@ Overall, collecting statistics on the censoring process helped in ensuring that 
 
 ### Why I have prefered en_core_web_md spacy model over en_core_web_lg model?
 
-
+While the large model (en_core_web_lg) might offer slightly better performance in terms of accuracy and generalization, especially for this assignment for the purpose of entity recognition(PERSON NAMES), the medium model (en_core_web_md) often provides sufficient performance for many applications without sacrificing too much accuracy. As the large model is big, in some cases it detects some extra entities that are not "PERSON NAMES" to be censored. This can make censoring somewhat not reliable. Due to this I choose en_core_web_md model!!  
 
 ### Process of developing code
 
@@ -95,26 +95,63 @@ The video is also available in the repository in good quality.<br>
 ## Functions
 #### main 
 
-   1. `parg()`<br>
+   1. `Argparse()`<br>
          • Description:<br>
-         &emsp;&emsp;- This function parses command-line arguments using the argparse module.<br>
-         &emsp;&emsp;- Facilitates the retrieval of user-provided options using argparse.<br>
+         &emsp;&emsp;- This function sets up an argument parser using the `argparse` module to parse command-line arguments.<br>
+         &emsp;&emsp;- It defines various command-line arguments such as input files, output directory, censoring flags (names, dates, phones, address), and statistics.<br>
          • Parameters:<br>
       &emsp;&emsp;- None<br>
          • Return:<br>
-         &emsp;&emsp;- An argparse.Namespace object containing the parsed arguments.<br>
+         &emsp;&emsp;- Parsed arguments object (`argparse.Namespace`) object containing the parsed arguments.<br>
 
-   2. `case(x)`<br>
+  2. `CenName(MailData)`<br>
+        • Description:<br>
+          &emsp;&emsp;- This function utilizes the spaCy model to extract names (entities labeled as "PERSON") from the input text.<br>
+          &emsp;&emsp;- Extracts person names from the provided text data.<br>
+         • Parameters:<br> 
+       &emsp;&emsp;- `MailData` - Input text data. <br>
+         • Returns: <br>
+       &emsp;&emsp;- A list containing the extracted person names from the provided text data..<br>
+
+  3. `CenDate(MailData)`<br>
+         • Description: <br>
+           &emsp;&emsp;- This function uses the Google Cloud Natural Language API to analyze entities in the text and extracts dates.<br>
+           &emsp;&emsp;- Extracts dates from the provided text data.<br>
+         • Parameters:<br>
+         &emsp;&emsp;- `MailData` - Input text data.<br>
+        • Returns: <br>
+        &emsp;&emsp;- A list containing the extracted dates from the provided text data.<br>
+    
+  5. `CenNum(MailData)`<br>
+         • Description: <br>
+           &emsp;&emsp;- Similar to CenDate(), this function uses the Google Cloud Natural Language API to analyze entities and extracts phone numbers. <br>
+           &emsp;&emsp;- Extracts phone numbers from the provided text data.<br>
+         • Parameters:<br>
+         &emsp;&emsp;- `MailData` - Input text data.<br>
+         • Returns: <br>
+          &emsp;&emsp;- A list containing the extracted phone numbers from the provided text data.<br>
+    
+  5. `CenLoc(MailData)`<br>
+         • Description: <br>
+                 &emsp;&emsp;- Similar to the CenDate() and CenNum() functions, it uses the Google Cloud Natural Language API to extract addresses from the input text.<br>
+                 &emsp;&emsp;- Extracts addresses from the provided text data.<br>
+            • Parameters: <br>
+            &emsp;&emsp;- `MailData` - Input text data.<br>
+            • Returns: <br>
+            &emsp;&emsp;- A list containing the extracted addresses from the provided text data.<br>
+
+   6. `analyze_entities(MailData, FlaTyp)`<br>
         • Description: <br>
-        &emsp;&emsp;- This function filters out tokens using Regex.<br>
-        &emsp;&emsp;- Prepares a list of tokens excluding digit-only entries for subsequent processing.
+         &emsp;&emsp;- This function coordinates the analysis of entities based on the flags provided..<br>
+         &emsp;&emsp;- It calls other functions based on the flags set in FlaTyp and collects statistics.<br>
         • Parameters:<br>
-            &emsp;&emsp;- `x`: A list of strings (tokens).<br>
+           &emsp;&emsp;- `MailData`: The input text to be analyzed.<br>
+           &emsp;&emsp;- `FlaTyp`: Dictionary containing flags indicating which types of entities to analyze.<br>
         • Return: <br>
-        &emsp;&emsp;- A list of strings (tokens) that do not consist solely of digits.<br>
-
-  3. `censor(info, type)`<br>
-        • Description: <br>
+        &emsp;&emsp;- A tuple containing a list of entities found in the text and a list of statistics regarding the entities (statistics of dates, phone numbers, addresses, and person names).<br>
+    
+  7. `censor(info, type)`<br>
+   • Description: <br>
         &emsp;&emsp;- This function replaces sensitive information in a given string with a block character.<br>
         &emsp;&emsp;- Uses unicode character '█' (U+2588) to censor sensitive data.<br>
         • Parameters:<br>
@@ -123,29 +160,27 @@ The video is also available in the repository in good quality.<br>
         • Return:<br>
          &emsp;&emsp;- The input string with sensitive information replaced by block characters.<br>
 
-   4. `analyze_entities(MailData)`<br>
+   8. `CenP(data, FlaTyp)`<br>
         • Description: <br>
-         &emsp;&emsp;- This function analyzes entities in text using both `SpaCy` and `Google Cloud Natural Language API`.<br>
-         &emsp;&emsp;- Identifies entities: names, dates, phone numbers, and addresses.<br>
-         &emsp;&emsp;- Extracting person label from the text using `SpaCy` package.<br>
-         &emsp;&emsp;- Analyzes Dates, Phone Number and addresses in text using `Google Cloud Natural Language API` package.<br>
-         &emsp;&emsp;- Calculates statistics of types and counts of different entities.<br>
-        • Parameters:<br>
-           &emsp;&emsp;- `MailData`: The input text to be analyzed.<br>
-        • Return: <br>
-        &emsp;&emsp;- A tuple containing a list of entities found in the text and a list of statistics regarding the entities (statistics of dates, phone numbers, addresses, and person names).<br>
-
-   5. `CenP(data)`<br>
-        • Description: <br>
-        &emsp;&emsp;- This function censors sensitive information in text data by.<br>
-        &emsp;&emsp;- calls analyze_entities and censor function to replace identified entities with block characters to obscure sensitive details.<br>
-        &emsp;&emsp;- Prints statistics of censored flags.<br>
+        &emsp;&emsp;- This function censors sensitive information based on the flags provided.<br>
+        &emsp;&emsp;- calls `analyze_entities` and `censor` function to replace identified entities with block characters to obscure sensitive details.<br>
+        &emsp;&emsp;- It also prints or writes statistics about the censored information.<br>
         • Parameters:<br>
             &emsp;&emsp;- `data`: The text data to be censored.<br>
+            &emsp;&emsp;- `FlaTyp`: Dictionary containing flags indicating which types of entities to analyze.<br>
         • Return: <br>
         &emsp;&emsp;- The censored text data.<br>
 
-   6. `Read(Xtemp, CCd)`<br>
+   9.    `case(x)`<br>
+        • Description: <br>
+        &emsp;&emsp;- This function filters out tokens using Regex.<br>
+        &emsp;&emsp;- Prepares a list of tokens excluding digit-only entries for subsequent processing.
+        • Parameters:<br>
+            &emsp;&emsp;- `x`: A list of strings (tokens).<br>
+        • Return: <br>
+        &emsp;&emsp;- Filtered list of elements.<br>
+
+   10. `Read(Xtemp, CCd, FlaTyp)`<br>
         • Description: <br>
         &emsp;&emsp;- This function reads input files, calls `CenP()` function to censore sensitive information in the text.<br>
         &emsp;&emsp;- Writing censored text to a new file.<br>
@@ -153,10 +188,11 @@ The video is also available in the repository in good quality.<br>
         • Parameters:<br>
             &emsp;&emsp;- `Xtemp`: A list of file paths to be read.<br>
             &emsp;&emsp;- `CCd`: The directory where censored files will be saved.<br>
+            &emsp;&emsp;- `FlaTyp`: Dictionary containing censoring flags.<br>
         • Return: <br>
         &emsp;&emsp;- None.<br>
 
-   7. `main()`<br>
+   11. `main()`<br>
         • Description: <br>
         &emsp;&emsp;- This function serves as the main entry point of the script.<br>
         &emsp;&emsp;- It parses command-line arguments, identifies input files, processes them, and performs censorship based on specified flags.<br>
@@ -171,46 +207,74 @@ The video is also available in the repository in good quality.<br>
         
 ## Testing
 
-Testing using pytest & mocking is done to make sure that all the functions are working independently and properly. Testing is crucial for early bug detection and maintaining code quality. Testing units of code encourages modular, understandable code and integrates seamlessly into continuous integration workflows, boosting integrity. Ultimately, all major functions like test_names, test_dates, test_addresses, test_phone_numbers and more are tested if they are functioning properly. For example. test_names verifies if the spacy model is able to identify names in the given text file. 
+Testing using pytest & mocking is done to make sure that all the functions are working independently and properly. Testing is crucial for early bug detection and maintaining code quality. Testing units of code encourages modular, understandable code and integrates seamlessly into continuous integration workflows, boosting integrity. The given unittesting code tests various functions related to censoring sensitive information such as names, dates, addresses, and phone numbers in a given text. Ultimately, all major functions like test_names, test_dates, test_addresses, test_phone_numbers and more are tested if they are functioning properly. For example. test_names verifies if the spacy model is able to identify names in the given text file. 
 
-    1.  test_group
+    1.  `test_censor`
         Purpose: 
-            -> This test is checking if the analyze_entities function correctly extracts named entities of type "PERSON" from the provided text.
+        - Tests the `censor` function, which is expected to replace sensitive information in a given text with a block character.
         Steps:
-            -> Create a mock language processing model.
-            -> Create mock entities with names and labels.
-            -> Set up the mock model to return the mock entities.
-            -> Call analyze_entities with a sample input string.
-            -> Check if the extracted entities match the expected outcome.
+            -> Defines test data including the input text (tempdata), detected entities (Detected), and the expected output after censoring (out).
+            -> Invokes the `censor` function with the test data.
+            -> Asserts that the output matches the expected output
 
-     2. test_read
+     2. `test_CenName` 
         Purpose: 
-            -> This test checks if the analyze_entities function returns an empty list when given an empty input string.
+        -  Tests the `CenName` function, which is expected to detect names in a given text.
         Steps:
-            -> Call analyze_entities with two empty strings.
-            -> Check if the result is an empty list.
+             -> Mocks the Spacy model using the @patch decorator.
+             -> Defines mock data for the Spacy model to return.
+             -> Sets up test data containing input text (tempdata) and the expected detected names (out).
+             -> Invoke the `CenName` function with the test data.
+             -> Assert that the detected names match the expected output.
 
-    3. test_input
+    3. `test_CenDate`
         Purpose: 
-            -> This test checks if the analyze_entities function returns an empty list when there are no entities in the provided text.
+        - Tests the `CenDate` function, which is expected to detect dates in a given text.
         Steps:
-            -> Call analyze_entities with a text string that does not contain any entities.
-            -> Check if the result is an empty list.
+             -> Mock the Google Cloud NLP API using the @patch decorator.
+             -> Define mock data for the API response.
+             -> Set up test data containing input text (tempdata) and the expected detected dates (out).
+             -> Invoke the `CenDate` function with the test data.
+             -> Assert that the detected dates match the expected output.
 
-    4. test_censor
+    4. `test_CenLoc`
         Purpose: 
-            -> This test checks if the analyze_entities function correctly identifies entities in the provided text.
+        - Tests the `CenLoc` function, which is expected to detect addresses in a given text.
         Steps:
-            -> Call analyze_entities with a text string containing a date.
-            -> Check if the result matches the expected list of entities (in this case, a list containing a date).
+             -> Mock the Google Cloud NLP API using the @patch decorator.
+             -> Define mock data for the API response.
+             -> Set up test data containing input text (tempdata) and the expected detected addresses (out).
+             -> Invoke the `CenLoc` function with the test data.
+             -> Assert that the detected addresses match the expected output.
 
-  
+    5. `test_CenNum`
+        Purpose: 
+        - Tests the CenLoc function, which is expected to detect phone numbers in a given text.
+        Steps:
+              -> Mock the Google Cloud NLP API using the @patch decorator.
+              -> Define mock data for the API response.
+              -> Set up test data containing input text (tempdata) and the expected detected phone numbers (out).
+              -> Invoke the `CenNum` function with the test data.
+              -> Assert that the detected phone numbers match the expected output.
+
+
+
+##### General Classes in test: 
+
+1. `TestCensoringFunctions` class: This is the main test class that inherits from unittest.TestCase. It contains several test methods to test different functionalities of the censoring functions.
+
+2. `MockEntity` class: A mock class to simulate entities detected by Spacy.
+
+3. `MockResponse` class: A mock class to simulate responses from the Google Cloud NLP API or similar services.
+
+4. `MockGoogleEntity` class: A mock class to simulate entities returned by the Google Cloud NLP API or similar services.
+
 ## Bugs and Assumptions
 
-• Assuming that atleast any one of the flag should be present in the run command. <br>
+• Assuming that atleast any one of the flag should be given in the run command. <br>
 • A large text files or a high volume of data exceeding system memory or processing limits, can lead to performance degradation or application crashes.<br>
 • All the entities are not accurately detected, it leaves some entities according to the model selected. 
-• I have used en_core_web_md model as given in assignment descrption. I could have used the large model(en_core_web_md) but it detects some extra data which should not be sensored compared to the Spacy medium English model.<br>
+• I have used en_core_web_md model as given in assignment description. I could have used the large model(en_core_web_md) but it detects some extra data which should not be sensored compared to the Spacy medium English model.<br>
 • Known bug: Some txt files with unsual formatting are not able to parse.<br> 
 • It does not check censor names in email addresses. <br>
 • No bugs apart from those mentioned above are known/identified.
